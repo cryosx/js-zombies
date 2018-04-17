@@ -231,7 +231,7 @@ class Player {
             1,
             equipedItem
           )[0];
-          this._pack.push(equipedItem);
+          // this._pack.push(equipedItem);
         } else {
           this.equipped = this._pack.splice(itemToEquipIndex, 1)[0];
         }
