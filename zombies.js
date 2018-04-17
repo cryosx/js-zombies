@@ -93,16 +93,16 @@ function Player(name, health, strength, speed) {
   this.health = health;
   this.strength = strength;
   this.speed = speed;
-  this._pack = [];
-  this._maxHealth = health;
+  let _pack = [];
+  let _maxHealth = health;
   this.isAlive = true;
   this.equipped = false;
 
   this.getPack = function() {
-    return this._pack;
+    return _pack;
   };
   this.getMaxHealth = function() {
-    return this._maxHealth;
+    return _maxHealth;
   };
 
   /**
@@ -117,7 +117,7 @@ function Player(name, health, strength, speed) {
    * @name checkPack
    */
 
-  this.checkPack = function() {
+  Player.prototype.checkPack = function() {
     let result = this.getPack().map(function(elem) {
       return elem.name;
     });
@@ -141,12 +141,12 @@ function Player(name, health, strength, speed) {
    * @return {boolean} true/false     Whether player was able to store item in pack.
    */
 
-  this.takeItem = function(item) {
-    if (this._pack.length > 2) {
+  Player.prototype.takeItem = function(item) {
+    if (this.getPack().length > 2) {
       console.log('Pack is full, cannot store item.');
       return false;
     } else {
-      this._pack.push(item);
+      this.getPack().push(item);
       console.log(`${this.name} took a ${item.name}`);
       return true;
     }
@@ -178,15 +178,15 @@ function Player(name, health, strength, speed) {
    * @return {boolean} true/false     Whether player was able to remove item from pack.
    */
 
-  this.discardItem = function(item) {
-    let itemIndex = this._pack.indexOf(item);
+  Player.prototype.discardItem = function(item) {
+    let itemIndex = this.getPack().indexOf(item);
     if (itemIndex < 0) {
       console.log(
         `Nothing was discarded since ${item.name} could not be found.`
       );
       return false;
     } else {
-      let item = this._pack.splice(itemIndex, 1)[0];
+      let item = this.getPack().splice(itemIndex, 1)[0];
       console.log(`${this.name} has discarded a ${item.name}`);
       return true;
     }
@@ -212,20 +212,20 @@ function Player(name, health, strength, speed) {
    * @param {Weapon} itemToEquip  The weapon item to equip.
    */
 
-  this.equip = function(itemToEquip) {
+  Player.prototype.equip = function(itemToEquip) {
     if (itemToEquip instanceof Weapon) {
-      let itemToEquipIndex = this._pack.indexOf(itemToEquip);
+      let itemToEquipIndex = this.getPack().indexOf(itemToEquip);
       if (itemToEquipIndex >= 0) {
         if (this.equipped) {
           let equipedItem = this.equipped;
-          this.equipped = this._pack.splice(
+          this.equipped = this.getPack().splice(
             itemToEquipIndex,
             1,
             equipedItem
           )[0];
-          this._pack.push(equipedItem);
+          this.getPack().push(equipedItem);
         } else {
-          this.equipped = this._pack.splice(itemToEquipIndex, 1)[0];
+          this.equipped = this.getPack().splice(itemToEquipIndex, 1)[0];
         }
       }
     }
@@ -249,11 +249,11 @@ function Player(name, health, strength, speed) {
    * @name eat
    * @param {Food} itemToEat  The food item to eat.
    */
-  this.eat = function(itemToEat) {
+  Player.prototype.eat = function(itemToEat) {
     if (itemToEat instanceof Food) {
-      let itemToEatIndex = this._pack.indexOf(itemToEat);
+      let itemToEatIndex = this.getPack().indexOf(itemToEat);
       if (itemToEatIndex >= 0) {
-        let food = this._pack.splice(itemToEatIndex, 1)[0];
+        let food = this.getPack().splice(itemToEatIndex, 1)[0];
         if (this.health + food.energy < this.getMaxHealth()) {
           this.health += food.energy;
         } else {
@@ -274,7 +274,7 @@ function Player(name, health, strength, speed) {
    * @name useItem
    * @param {Item/Weapon/Food} item   The item to use.
    */
-  this.useItem = function(item) {
+  Player.prototype.useItem = function(item) {
     if (item instanceof Weapon) {
       this.equip(item);
     } else if (item instanceof Food) {
@@ -294,7 +294,7 @@ function Player(name, health, strength, speed) {
    * @name equippedWith
    * @return {string/boolean}   Weapon name or false if nothing is equipped.
    */
-  this.equippedWith = function() {
+  Player.prototype.equippedWith = function() {
     if (this.equipped) {
       console.log(`${this.name} is equipped with a ${this.equipped.name}`);
       return this.equipped.name;
@@ -344,8 +344,6 @@ function Zombie(health, strength, speed) {
  */
 function FastZombie(health, strength, speed) {
   Zombie.call(this, health, strength, speed);
-  this._maxHealth = health;
-  this.isAlive = true;
 }
 
 FastZombie.prototype = Object.create(Zombie.prototype);
@@ -371,8 +369,6 @@ FastZombie.prototype = Object.create(Zombie.prototype);
 
 function StrongZombie(health, strength, speed) {
   Zombie.call(this, health, strength, speed);
-  this._maxHealth = health;
-  this.isAlive = true;
 }
 
 StrongZombie.prototype = Object.create(Zombie.prototype);
@@ -399,8 +395,6 @@ StrongZombie.prototype = Object.create(Zombie.prototype);
 
 function RangedZombie(health, strength, speed) {
   Zombie.call(this, health, strength, speed);
-  this._maxHealth = health;
-  this.isAlive = true;
 }
 
 RangedZombie.prototype = Object.create(Zombie.prototype);
@@ -427,8 +421,6 @@ RangedZombie.prototype = Object.create(Zombie.prototype);
 
 function ExplodingZombie(health, strength, speed) {
   Zombie.call(this, health, strength, speed);
-  this._maxHealth = health;
-  this.isAlive = true;
 }
 
 ExplodingZombie.prototype = Object.create(Zombie.prototype);
